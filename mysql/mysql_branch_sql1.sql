@@ -1,6 +1,11 @@
 create database mydb;
 use mydb;
 
+
+select * from tb_numbers;
+
+show tables;
+
 alter table tb_calendar_data rename tb_calendar;
 
 select cd_symd, cd_ly, cd_lm,cd_ld,cd_kk from tb_calendar where cd_ly>1962 and cd_lm=3 and cd_ld=24 order by cd_kk, cd_ly, cd_lm, cd_ld;
@@ -94,65 +99,80 @@ CREATE TABLE tb_anniversary (
   index idx_cd_no (cd_no)
 );
 
-drop table tb_calendar;
-CREATE TABLE tb_calendar (
-  cd_no int4 unsigned NOT NULL auto_increment comment 'sequence',
-  cd_sgi int2 unsigned NOT NULL default '0' comment '단기년도',
-  cd_sy int2 unsigned NOT NULL default '0' comment '양력 년',
-  cd_sm enum('1','2','3','4','5','6','7','8','9','10','11','12') NOT NULL default '1' comment '양력 월',
-  cd_sd enum('1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31') NOT NULL default '1' comment '양력 일',
-  cd_ly int2 unsigned NOT NULL default '0' comment '음력 년',
-  cd_lm enum('1','2','3','4','5','6','7','8','9','10','11','12') NOT NULL default '1' comment '음력 월',
-  cd_ld enum('1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30') NOT NULL default '1' comment '음력 일',
-  cd_hyganjee varchar(6) default NULL comment '년 한문 간지',
-  cd_kyganjee varchar(6) default NULL comment '년 한글 간지',
-  cd_hmganjee varchar(6) default NULL comment '월 한문 간지',
-  cd_kmganjee varchar(6) default NULL comment '월 한글 간지',
-  cd_hterms varchar(6) default NULL comment '한문 절기',
-  cd_kterms varchar(6) default NULL comment '한글 절기',
-  cd_week char(3) default NULL comment '요일(일월화수목금토)',
-  cd_sol_plan varchar(50) default NULL comment '양력 행사(국경일/기념일 등)',
-  cd_lun_plan varchar(50) default NULL comment '음력 행사(절/한식 등)',
-  cd_dogday varchar(6) default NULL comment '복날(초복/중복/말복)',
-  cd_ddi enum('쥐','소','호랑이','토끼','용','뱀','말','양','원숭이','닭','개','돼지') NOT NULL default '쥐' comment '띠(쥐/소/...)',
-  cd_kk char default '0' comment '윤달(1:윤당,0:평달)',
-  holiday char default '0' comment '기념일(1:국경일,2:법정공휴일,3:국가기념일,4:기타 기념일,5:음력절)',
-  PRIMARY KEY  (cd_no),
-  unique uni_symd (cd_sy, cd_sm, cd_sd)
-);
+DROP TABLE IF EXISTS `tb_calendar`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tb_calendar` (
+  `cd_no` int unsigned NOT NULL AUTO_INCREMENT COMMENT 'sequence',
+  `cd_sgi` smallint unsigned NOT NULL DEFAULT '0' COMMENT '단기년도',
+  `cd_symd` varchar(10) DEFAULT NULL COMMENT '양력 년월일',
+  `cd_sy` smallint unsigned NOT NULL DEFAULT '0' COMMENT '양력 년',
+  `cd_sm` enum('1','2','3','4','5','6','7','8','9','10','11','12') NOT NULL DEFAULT '1' COMMENT '양력 월',
+  `cd_sd` enum('1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30','31') NOT NULL DEFAULT '1' COMMENT '양력 일',
+  `cd_ly` smallint unsigned NOT NULL DEFAULT '0' COMMENT '음력 년',
+  `cd_lm` enum('1','2','3','4','5','6','7','8','9','10','11','12') NOT NULL DEFAULT '1' COMMENT '음력 월',
+  `cd_ld` enum('1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30') NOT NULL DEFAULT '1' COMMENT '음력 일',
+  `cd_hyganjee` varchar(6) DEFAULT NULL COMMENT '년 한문 간지',
+  `cd_kyganjee` varchar(6) DEFAULT NULL COMMENT '년 한글 간지',
+  `cd_hmganjee` varchar(6) DEFAULT NULL COMMENT '월 한문 간지',
+  `cd_kmganjee` varchar(6) DEFAULT NULL COMMENT '월 한문 간지',
+  `cd_hdganjee` varchar(6) DEFAULT NULL COMMENT '일 한문 간지',
+  `cd_kdganjee` varchar(6) DEFAULT NULL COMMENT '월 한글 간지',
+  `cd_hterms` varchar(6) DEFAULT NULL COMMENT '한문 절기',
+  `cd_kterms` varchar(6) DEFAULT NULL COMMENT '한글 절기',
+  `cd_week` char(3) DEFAULT NULL COMMENT '요일(일월화수목금토)',
+  `cd_sol_plan` varchar(50) DEFAULT NULL COMMENT '양력 행사(국경일/기념일 등)',
+  `cd_lun_plan` varchar(50) DEFAULT NULL COMMENT '음력 행사(절/한식 등)',
+  `cd_dogday` varchar(6) DEFAULT NULL COMMENT '복날(초복/중복/말복)',
+  `cd_ddi` enum('쥐','소','호랑이','토끼','용','뱀','말','양','원숭이','닭','개','돼지') NOT NULL DEFAULT '쥐' COMMENT '띠(쥐/소/...)',
+  `cd_kk` char(1) DEFAULT '0' COMMENT '윤달(1:윤당,0:평달)',
+  `holiday` char(1) DEFAULT '0' COMMENT '기념일(1:국경일,2:법정공휴일,3:국가기념일,4:기타 기념일,5:음력절)',
+  PRIMARY KEY (`cd_no`),
+  UNIQUE KEY `uni_symd` (`cd_sy`,`cd_sm`,`cd_sd`),
+  KEY `idx_lymd` (`cd_ly`,`cd_lm`,`cd_ld`,`cd_kk`),
+  KEY `idx_lmd` (`cd_lm`,`cd_ld`,`cd_kk`),
+  KEY `idx_smd` (`cd_sm`,`cd_sd`),
+  KEY `idx_sd` (`cd_sd`),
+  KEY `idx_symd` (`cd_sy`,`cd_sm`,`cd_sd`)
+) ENGINE=InnoDB CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 
 select sysdate(), curdate(), current_date() from dual;
 
-CREATE TABLE `lotto`.`tb_numbers` (
-  `round` INT(5) NOT NULL DEFAULT 0 COMMENT 'round',
-  `lt_date` VARCHAR(10) NOT NULL DEFAULT '0000-00-00' COMMENT 'lotted date',
-  `n1` INT(2) NOT NULL DEFAULT 0 COMMENT 'number 1',
-  `n2` INT(2) NOT NULL DEFAULT 0 COMMENT 'number 2',
-  `n3` INT(2) NOT NULL DEFAULT 0 COMMENT 'number 3',
-  `n4` INT(2) NOT NULL DEFAULT 0 COMMENT 'number 4',
-  `n5` INT(2) NOT NULL DEFAULT 0 COMMENT 'number 5',
-  `n6` INT(2) NOT NULL DEFAULT 0 COMMENT 'number 6',
-  `bonus` INT(2) NOT NULL DEFAULT 0 COMMENT 'bonus number',
-  `total` INT(3) ZEROFILL NULL DEFAULT 0 COMMENT 'sum of numbers',
-  `ac` INT(2) ZEROFILL NULL DEFAULT 0 COMMENT 'ac value',
-  `L05` INT(1) ZEROFILL NULL DEFAULT 0 COMMENT 'last 05 count',
-  `L10` INT(1) ZEROFILL NULL DEFAULT 0 COMMENT 'last 10 count',
-  `n1_count` INT(5) ZEROFILL NULL DEFAULT 0 COMMENT 'first rank count',
-  `n1_amount` INT(11) ZEROFILL NULL DEFAULT 0 COMMENT 'first rank amount',
-  `n2_count` INT(5) ZEROFILL NULL DEFAULT 0 COMMENT 'second rank count',
-  `n2_amount` INT(11) ZEROFILL NULL DEFAULT 0 COMMENT 'second rank amount',
-  `n3_count` INT(5) ZEROFILL NULL DEFAULT 0 COMMENT 'third rank count',
-  `n3_amount` INT(11) ZEROFILL NULL DEFAULT 0 COMMENT 'third rank amount',
-  `n4_count` INT(8) ZEROFILL NULL DEFAULT 0 COMMENT 'fourth rank count',
-  `n4_amount` INT(6) ZEROFILL NULL DEFAULT 0 COMMENT 'fourth rank amount',
-  `n5_count` INT(8) ZEROFILL NULL DEFAULT 0 COMMENT 'fifth rank count',
-  `n5_amount` INT(5) ZEROFILL NULL DEFAULT 0 COMMENT 'fifth rank amount',
-  `n1_auto` INT(2) ZEROFILL NULL DEFAULT 0 COMMENT 'first rank auto count',
-  `n1_manu` INT(2) ZEROFILL NULL DEFAULT 0 COMMENT 'first rank manu count',
-  `n1_half` INT(2) ZEROFILL NULL DEFAULT 0 COMMENT 'first rank half count',
+
+DROP TABLE IF EXISTS `tb_numbers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `tb_numbers` (
+  `round` int2(5) NOT NULL DEFAULT 0 COMMENT 'round',
+  `lt_date` varchar(10) NOT NULL COMMENT 'lotted date',
+  `n1` int2 NOT NULL COMMENT 'number 1',
+  `n2` int2 NOT NULL COMMENT 'number 2',
+  `n3` int2 NOT NULL COMMENT 'number 3',
+  `n4` int2 NOT NULL COMMENT 'number 4',
+  `n5` int2 NOT NULL COMMENT 'number 5',
+  `n6` int2 NOT NULL COMMENT 'number 6',
+  `bonus` int2 NOT NULL COMMENT 'bonus number',
+  `total` int2(3) unsigned COMMENT 'sum of numbers',
+  `ac` int2(2) unsigned COMMENT 'ac value',
+  `L05` int2(1) unsigned COMMENT 'last 05 count',
+  `L10` int2(1) unsigned COMMENT 'last 10 count',
+  `n1_count` int2(5) unsigned COMMENT 'first rank count',
+  `n1_amount` int8(13) unsigned COMMENT 'first rank amount',
+  `n2_count` int2(5) unsigned COMMENT 'second rank count',
+  `n2_amount` int4(11) unsigned COMMENT 'second rank amount',
+  `n3_count` int2(5) unsigned COMMENT 'third rank count',
+  `n3_amount` int4(11) unsigned COMMENT 'third rank amount',
+  `n4_count` int4(8) unsigned COMMENT 'fourth rank count',
+  `n4_amount` int4(6) unsigned COMMENT 'fourth rank amount',
+  `n5_count` int4(8) unsigned COMMENT 'fifth rank count',
+  `n5_amount` int2(5) unsigned COMMENT 'fifth rank amount',
+  `n1_auto` int2(2) unsigned COMMENT 'first rank auto count',
+  `n1_manu` int2(2) unsigned COMMENT 'first rank manu count',
+  `n1_half` int2(2) unsigned COMMENT 'first rank half count',
   PRIMARY KEY (`round`),
-  UNIQUE INDEX `lt_date_UNIQUE` (`lt_date` ASC) VISIBLE)
-COMMENT = 'lotto numbers';
+  UNIQUE KEY `lt_date_UNIQUE` (`lt_date`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='lotto numbers';
 
 
 select left(now(),10) from dual;
