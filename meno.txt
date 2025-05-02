@@ -1,5 +1,11 @@
 
 
+
+2025-05-01  - scoop install
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+Invoke-RestMethod -Uri https://get.scoop.sh | Invoke-Expression
+
+
 2025-04-29 14:58 화
 Two days of hard work. The result was the eclipse server problem.
 이틀동안 찐하게 고생했다. 결과는 eclipse server 문제였다.
