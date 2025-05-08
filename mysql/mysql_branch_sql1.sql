@@ -1,7 +1,10 @@
 create database mydb;
 use mydb;
 
+update tb_calendar set holiday='3' where cd_no>67402 and cd_sm=7 and cd_sd=17 and holiday='1';
+select * from tb_calendar where cd_no>67402 and cd_sm=7 and cd_sd=17 and holiday!='1';
 
+select * from tb_anniversary;
 select * from tb_numbers;
 
 show tables;
@@ -88,6 +91,24 @@ alter table tb_calendar add cd_kmganjee varchar(6) default NULL comment '월 한
 alter table tb_calendar add cd_hmganjee varchar(6) default NULL comment '월 한문 간지' after cd_kyganjee;
 alter table tb_calendar change cd_hmganjee cd_hdganjee varchar(6) default NULL comment '일 한문 간지';
 alter table tb_calendar change cd_kmganjee cd_kdganjee varchar(6) default NULL comment '월 한글 간지';
+
+CREATE TABLE `tb_bbs` (
+  `bbs_no` int4(11) NOT NULL auto_increment COMMENT 'sequence',
+  `par_no` int4(11) default 0 COMMENT 'parent sequence',
+  `bbs_order` int4(11) default 0 COMMENT 'bbs order',
+  `bbs_hits` int4(5) unsigned COMMENT 'counts of hits',
+  `writer` varchar(64) COMMENT 'writer',
+  `reg_dt` varchar(20) COMMENT 'write date',
+  `bbs_title` varchar(128) NOT NULL COMMENT 'bbs title',
+  `bbs_text` mediumtext COMMENT 'content',
+  PRIMARY KEY (`bbs_no`),
+  index idx_par_no (par_no),
+  index idx_bbs_order (bbs_order),
+  index idx_write (writer),
+  index idx_reg_dt (reg_dt),
+  index idx_bbs_title (bbs_title),
+  index idx_title_writer (bbs_title, writer)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='bbs board';
 
 drop table tb_anniversary;
 CREATE TABLE tb_anniversary (
