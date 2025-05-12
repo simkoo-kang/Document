@@ -1,5 +1,7 @@
 
-
+2025-05-12 08:17
+Meet Kim Jong-un, shake hands, and eat together. In my dreams....
+김정은을 만나 악수하고 식사를 함께하다. 꿈속에서...
 
 2025-05-01  - scoop install
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
